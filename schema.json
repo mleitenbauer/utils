@@ -1,0 +1,134 @@
+{
+  "schemaType": "Test Schema",
+  "name": "Test Scripts",
+  "description": "Intellisense Test Scripts",
+  "schema": {
+    "$defs": {
+      "Datasource": {
+        "description": "test",
+        "properties": {
+          "uuid": {
+            "description": "UUID for the datasource in database",
+            "example": "00000000-0000-0000-0000-000000000006",
+            "format": "uuid",
+            "title": "Uuid",
+            "type": "string"
+          },
+          "timespan": {
+            "anyOf": [{ "$ref": "#/$defs/Timespan" }, { "type": "null" }],
+            "default": null
+          }
+        },
+        "required": ["uuid"],
+        "title": "Datasource",
+        "type": "object"
+      },
+      "TestModuleBaseclass": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "ID or name for this Rept Module in the structure",
+            "title": "Id",
+            "type": "string"
+          },
+          "some_extra_info": {
+            "description": "This is some totally necessary info for processing",
+            "title": "Some Extra Info",
+            "type": "string"
+          },
+          "order": {
+            "description": "order was unexpected, but necessary for this",
+            "title": "Order",
+            "type": "number"
+          },
+          "data": { "$ref": "#/$defs/TestModuleDatasources" }
+        },
+        "required": ["id", "some_extra_info", "order", "data"],
+        "title": "TestModuleBaseclass",
+        "type": "object"
+      },
+      "TestModuleDatasources": {
+        "additionalProperties": false,
+        "description": "",
+        "properties": {
+          "float_sources": {
+            "items": { "$ref": "#/$defs/Datasource" },
+            "title": "test Sources",
+            "type": "array"
+          },
+          "indi_sources": {
+            "items": { "$ref": "#/$defs/Datasource" },
+            "title": "Indi Sources",
+            "type": "array"
+          },
+          "indicator3": { "$ref": "#/$defs/Datasource" }
+        },
+        "required": ["float_sources", "indi_sources", "indicator3"],
+        "title": "TestModuleDatasources",
+        "type": "object"
+      },
+      "TestModuleMainclass": {
+        "additionalProperties": false,
+        "properties": {
+          "TestModule": {
+            "anyOf": [{ "$ref": "#/$defs/TestModuleBaseclass" }, { "type": "null" }],
+            "default": null
+          }
+        },
+        "title": "TestModuleMainclass",
+        "type": "object"
+      },
+      "Timespan": {
+        "description": "Timespan Test",
+        "properties": {
+          "unit": {
+            "description": "Unit of the timespan -> day, week, month, starting from the last full calendarial interval",
+            "enum": ["day", "week", "month", "year"],
+            "title": "Unit",
+            "type": "string"
+          },
+          "count": {
+            "description": "number of days, weeks, months, years",
+            "title": "Count",
+            "type": "integer"
+          },
+          "requestmode": {
+            "description": "how the request to the DB should be handled, e.g. all data, 5min Avg, ... ",
+            "enum": ["all", "timebucket 5 min", "timebucket 1 hour", "timebucket 1 day"],
+            "title": "Requestmode",
+            "type": "string"
+          },
+          "startmode": {
+            "description": "Defines the relative startpoint of the time - end for the last x units, begin for the first x units",
+            "enum": ["begin", "end"],
+            "title": "Startmode",
+            "type": "string"
+          }
+        },
+        "required": ["unit", "count", "requestmode", "startmode"],
+        "title": "Timespan",
+        "type": "object"
+      },
+      "ValueClass": {
+        "enum": [
+          "v_peak_f"
+        ],
+        "title": "ValueClass",
+        "type": "string"
+      }
+    },
+    "additionalProperties": false,
+    "properties": {
+      "module": {
+        "anyOf": [
+          { "$ref": "#/$defs/TestModuleMainclass" }
+        ],
+        "description": "The module that should be executed with its configured input data",
+        "title": "Module"
+      }
+    },
+    "required": ["module"],
+    "title": "YamlSchema",
+    "type": "object"
+  }
+}
